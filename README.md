@@ -1,2 +1,4 @@
 # cruise-control
-SMSK Cruise-control deployment
+
+This is a blank template for cruise-control
+
