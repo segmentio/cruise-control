@@ -1,0 +1,26 @@
+apiVersion: platform.segment.com/v1alpha1
+kind: SegmentApplicationExperimental
+cell: core
+metadata:
+  name: cruise-control
+  namespace: cruise-control
+spec:
+  targets:
+  - name: stage-usw2-dp-sandbox
+    cluster: stage:us-west-2:dp-sandbox
+    replicatedService:
+      namespace: cruise-control
+      replicas: 1
+      mainContainer:
+        imageName: cruise-control
+        imageRegistry: 528451384384.dkr.ecr.us-west-2.amazonaws.com
+        imageName: v2.5.42
+        command:
+        - "/usr/local/cruise-control/kafka-cruise-control-start.sh"
+        - "/usr/local/cruise-control/config/cruisecontrol.properties"
+        resources:
+          limits:
+            cpu: 0.1
+            memory: 10Mi
+        ctlstore:
+          disabled: true
