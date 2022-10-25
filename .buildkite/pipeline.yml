@@ -7,4 +7,4 @@ steps:
   # See https://github.com/segmentio/imager for more details
   - label: ":docker: Build and Publish container image"
     commands: 
-      - imager buildpush --build-arg "VERSION=$${BUILDKITE_SHORT_COMMIT}" .
+      - "imager buildpush . -r cruise-control -d all"
