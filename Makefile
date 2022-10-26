@@ -1,12 +1,4 @@
-ECR_REPO := "528451384384.dkr.ecr.us-west-2.amazonaws.com/cruise-control"
-VERSION := "v2.5.42"
+include ./Makefile.common.mk
 
-.PHONY: docker-build
-docker-build:
-	docker build --build-arg VERSION=$(VERSION) \
-		-t $(ECR_REPO):$(VERSION) \
-		.
-
-.PHONY: docker-publish
-docker-publish: docker-build
-	docker push $(ECR_REPO):$(VERSION)
+IMAGE_NAME := cruise-control
+IMAGE_VERSION := "v2.5.42"
