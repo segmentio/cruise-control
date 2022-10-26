@@ -6,7 +6,7 @@ metadata:
   namespace: cruise-control
 spec:
   targets:
-  - name: stage-usw2-dp-sandbox
+  - name: cc-stage-usw2-dp-sandbox
     cluster: stage:us-west-2:dp-sandbox
     replicatedService:
       iamRoleName: cruise-control

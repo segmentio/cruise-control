@@ -1,0 +1,150 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cruise-control-capacitycores
+  namespace: cruise-control
+  labels:
+    app: cruise-control
+    k2.segment.com/app: cruise-control
+    k2.segment.com/argocd: "true"
+    k2.segment.com/build: 9a038a0
+    k2.segment.com/deploy: 67ce12f920623b
+    k2.segment.com/repo: cruise-control
+    k2.segment.com/skipped-checks: "true"
+    segment.com/managed-by: k2
+    version: 9a038a0-67ce12f920623b
+  annotations:
+    k2.segment.com/context: '{"appConfigMismatch":false,"appConfigSource":"file://.k2/cc-stage-usw2-dp-sandbox.yaml","appName":"cruise-control","argoCDDeploy":true,"argoCDTestDeploy":false,"buildTag":"9a038a0","deployID":"67ce12f920623b","deployTime":"2022-10-26T06:30:40.704807Z","fullDiffs":false,"host":"C02GK492MD6M","image":null,"k2Root":"/Users/ssingudasu/.kube/k2","k2Version":"0.10.0","repoBranch":"25oct2022-01","repoName":"cruise-control","repoSHA":"0495413d37f4f0ef6b8a6e7215ce8eb70558d60e","skipChecks":true,"skipChecksReason":"","targetCluster":"stage:us-west-2:dp-sandbox","targetName":"cc-stage-usw2-dp-sandbox","user":"ssingudasu","workingDir":"/Users/ssingudasu/Desktop/twilio/projects/cruise-control","shardDeployment":false}'
+data:
+  capacityCores.json: |
+    {
+      "brokerCapacities":[
+        {
+          "brokerId": "-1",
+          "capacity": {
+            "DISK": "300000",
+            "CPU": {"num.cores": "2"},
+            "NW_IN": "104857600",
+            "NW_OUT": "104857600"
+          },
+          "doc": "This is the default capacity. Capacity unit used for disk is in MB, cpu is in number of cores, network throughput is in KB."
+        }
+      ]
+    }
+immutable: false
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cruise-control-properties
+  namespace: cruise-control
+  labels:
+    app: cruise-control
+    k2.segment.com/app: cruise-control
+    k2.segment.com/argocd: "true"
+    k2.segment.com/build: 9a038a0
+    k2.segment.com/deploy: 67ce12f920623b
+    k2.segment.com/repo: cruise-control
+    k2.segment.com/skipped-checks: "true"
+    segment.com/managed-by: k2
+    version: 9a038a0-67ce12f920623b
+  annotations:
+    k2.segment.com/context: '{"appConfigMismatch":false,"appConfigSource":"file://.k2/cc-stage-usw2-dp-sandbox.yaml","appName":"cruise-control","argoCDDeploy":true,"argoCDTestDeploy":false,"buildTag":"9a038a0","deployID":"67ce12f920623b","deployTime":"2022-10-26T06:30:40.704807Z","fullDiffs":false,"host":"C02GK492MD6M","image":null,"k2Root":"/Users/ssingudasu/.kube/k2","k2Version":"0.10.0","repoBranch":"25oct2022-01","repoName":"cruise-control","repoSHA":"0495413d37f4f0ef6b8a6e7215ce8eb70558d60e","skipChecks":true,"skipChecksReason":"","targetCluster":"stage:us-west-2:dp-sandbox","targetName":"cc-stage-usw2-dp-sandbox","user":"ssingudasu","workingDir":"/Users/ssingudasu/Desktop/twilio/projects/cruise-control","shardDeployment":false}'
+data:
+  cruisecontrol.properties: |
+    bootstrap.servers=kafka-kafka.dp-sandbox.segment.local:9092
+    zookeeper.connect=zk-kafka.dp-sandbox.segment.local:2181/kafka
+    zookeeper.security.enabled=false
+    webserver.http.port=9090
+    webserver.http.address=0.0.0.0
+    webserver.http.cors.enabled=false
+    webserver.http.cors.origin=http://localhost:9090
+    webserver.http.cors.allowmethods=OPTIONS,GET,POST
+    webserver.http.cors.exposeheaders=User-Task-ID,Content-Type
+    webserver.api.urlprefix=/kafkacruisecontrol/*
+    webserver.ui.diskpath=./cruise-control-ui/dist/
+    webserver.ui.urlprefix=/*
+    webserver.request.maxBlockTimeMs=10000
+    webserver.session.maxExpiryTimeMs=60000
+    webserver.session.path=/
+    webserver.accesslog.enabled=false
+    webserver.accesslog.path=access.log
+    webserver.accesslog.retention.days=14
+    two.step.verification.enabled=false
+    two.step.purgatory.retention.time.ms=1209600000
+    two.step.purgatory.max.requests=25
+    num.metric.fetchers=1
+    metric.sampler.class=com.linkedin.kafka.cruisecontrol.monitor.sampling.CruiseControlMetricsReporterSampler
+    sampling.allow.cpu.capacity.estimation=true
+    metric.reporter.topic=__CruiseControlMetrics
+    sample.store.class=com.linkedin.kafka.cruisecontrol.monitor.sampling.KafkaSampleStore
+    partition.metric.sample.store.topic=__KafkaCruiseControlPartitionMetricSamples
+    broker.metric.sample.store.topic=__KafkaCruiseControlModelTrainingSamples
+    sample.store.topic.replication.factor=2
+    num.sample.loading.threads=8
+    metric.sampler.partition.assignor.class=com.linkedin.kafka.cruisecontrol.monitor.sampling.DefaultMetricSamplerPartitionAssignor
+    metric.sampling.interval.ms=120000
+    partition.metrics.window.ms=150000
+    num.partition.metrics.windows=5
+    min.samples.per.partition.metrics.window=1
+    broker.metrics.window.ms=150000
+    num.broker.metrics.windows=20
+    min.samples.per.broker.metrics.window=1
+    capacity.config.file=/usr/local/cruise-control/config/capacityCores.json
+    default.goals=com.linkedin.kafka.cruisecontrol.analyzer.goals.RackAwareGoal,com.linkedin.kafka.cruisecontrol.analyzer.goals.ReplicaDistributionGoal,com.linkedin.kafka.cruisecontrol.analyzer.goals.RackAwareDistributionGoal
+    goals=com.linkedin.kafka.cruisecontrol.analyzer.goals.RackAwareGoal,com.linkedin.kafka.cruisecontrol.analyzer.goals.ReplicaDistributionGoal,com.linkedin.kafka.cruisecontrol.analyzer.goals.RackAwareDistributionGoal
+    intra.broker.goals=com.linkedin.kafka.cruisecontrol.analyzer.goals.IntraBrokerDiskCapacityGoal,com.linkedin.kafka.cruisecontrol.analyzer.goals.IntraBrokerDiskUsageDistributionGoal
+    hard.goals=com.linkedin.kafka.cruisecontrol.analyzer.goals.RackAwareGoal,com.linkedin.kafka.cruisecontrol.analyzer.goals.ReplicaDistributionGoal,com.linkedin.kafka.cruisecontrol.analyzer.goals.RackAwareDistributionGoal
+    min.valid.partition.ratio=0.95
+    cpu.balance.threshold=1.1
+    disk.balance.threshold=1.1
+    network.inbound.balance.threshold=1.1
+    network.outbound.balance.threshold=1.1
+    replica.count.balance.threshold=1.1
+    cpu.capacity.threshold=0.7
+    disk.capacity.threshold=0.8
+    network.inbound.capacity.threshold=0.8
+    network.outbound.capacity.threshold=0.8
+    cpu.low.utilization.threshold=0.0
+    disk.low.utilization.threshold=0.0
+    network.inbound.low.utilization.threshold=0.0
+    network.outbound.low.utilization.threshold=0.0
+    metric.anomaly.percentile.upper.threshold=90.0
+    metric.anomaly.percentile.lower.threshold=10.0
+    proposal.expiration.ms=60000
+    max.replicas.per.broker=10000
+    num.proposal.precompute.threads=1
+    num.concurrent.partition.movements.per.broker=10
+    num.concurrent.intra.broker.partition.movements=2
+    num.concurrent.leader.movements=1000
+    execution.progress.check.interval.ms=10000
+    anomaly.notifier.class=com.linkedin.kafka.cruisecontrol.detector.notifier.SelfHealingNotifier
+    metric.anomaly.finder.class=com.linkedin.kafka.cruisecontrol.detector.KafkaMetricAnomalyFinder
+    anomaly.detection.interval.ms=120000
+    anomaly.detection.goals=com.linkedin.kafka.cruisecontrol.analyzer.goals.RackAwareGoal,com.linkedin.kafka.cruisecontrol.analyzer.goals.ReplicaDistributionGoal,com.linkedin.kafka.cruisecontrol.analyzer.goals.RackAwareDistributionGoal
+    metric.anomaly.analyzer.metrics=BROKER_PRODUCE_LOCAL_TIME_MS_50TH,BROKER_PRODUCE_LOCAL_TIME_MS_999TH,BROKER_CONSUMER_FETCH_LOCAL_TIME_MS_50TH,BROKER_CONSUMER_FETCH_LOCAL_TIME_MS_999TH,BROKER_FOLLOWER_FETCH_LOCAL_TIME_MS_50TH,BROKER_FOLLOWER_FETCH_LOCAL_TIME_MS_999TH,BROKER_LOG_FLUSH_TIME_MS_50TH,BROKER_LOG_FLUSH_TIME_MS_999TH
+    self.healing.exclude.recently.demoted.brokers=true
+    self.healing.exclude.recently.removed.brokers=false
+    failed.brokers.zk.path=/CruiseControlBrokerList
+    topic.config.provider.class=com.linkedin.kafka.cruisecontrol.config.KafkaTopicConfigProvider
+    cluster.configs.file=/usr/local/cruise-control/config/clusterConfigs.json
+    completed.kafka.monitor.user.task.retention.time.ms=86400000
+    completed.cruise.control.monitor.user.task.retention.time.ms=86400000
+    completed.kafka.admin.user.task.retention.time.ms=604800000
+    completed.cruise.control.admin.user.task.retention.time.ms=604800000
+    completed.user.task.retention.time.ms=86400000
+    demotion.history.retention.time.ms=1209600000
+    removal.history.retention.time.ms=1209600000
+    max.cached.completed.kafka.monitor.user.tasks=20
+    max.cached.completed.cruise.control.monitor.user.tasks=20
+    max.cached.completed.kafka.admin.user.tasks=30
+    max.cached.completed.cruise.control.admin.user.tasks=30
+    max.cached.completed.user.tasks=25
+    max.active.user.tasks=5
+    self.healing.enabled=false
+    broker.failure.alert.threshold.ms=30000
+    broker.failure.self.healing.threshold.ms=30000
+    self.healing.broker.failure.enabled=true
+    self.healing.goal.violation.enabled=true
+immutable: false
