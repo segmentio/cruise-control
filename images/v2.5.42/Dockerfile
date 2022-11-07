@@ -16,5 +16,4 @@ RUN apt-get update && \
 	./gradlew jar copyDependantLibs
 
 EXPOSE 9090
-
 ENTRYPOINT ["/usr/local/cruise-control/kafka-cruise-control-start.sh", "/usr/local/cruise-control/config/cruisecontrol.properties"]
