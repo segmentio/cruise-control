@@ -71,9 +71,9 @@ spec:
       data: 
         default.conf: |
           server {
-            listen                  81;
-            listen [::]:81;
-            server_name example.com;
+            listen                  80;
+            listen [::]:80;
+            server_name localhost;
             location / {
               proxy_pass http://localhost:8080/workspaces/ws-e243d20d-1463-4774-8c1b-45fcde0ef284;
             }
@@ -121,7 +121,7 @@ spec:
           two.step.purgatory.max.requests=25
           num.metric.fetchers=1
           metric.sampler.class=com.linkedin.kafka.cruisecontrol.monitor.sampling.prometheus.PrometheusMetricSampler
-          prometheus.server.endpoint=http://127.0.0.1:80
+          prometheus.server.endpoint=http://localhost:80
           sampling.allow.cpu.capacity.estimation=true
           metric.reporter.topic=__CruiseControlMetrics
           sample.store.class=com.linkedin.kafka.cruisecontrol.monitor.sampling.KafkaSampleStore
