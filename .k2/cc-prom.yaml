@@ -15,6 +15,8 @@ spec:
       replicas: 1
       mainContainers:
       - name: container1
+        ctlstore:
+          disabled: true
         image: 528451384384.dkr.ecr.us-west-2.amazonaws.com/cruise-control:v2.5.42
         imageName: cruise-control
         imageRegistry: 528451384384.dkr.ecr.us-west-2.amazonaws.com
@@ -25,8 +27,6 @@ spec:
           limits:
             cpu: 0.5
             memory: 512M
-        ctlstore:
-          disabled: true
         volumeMounts:
         - name: cruise-control-properties
           mountPath: /usr/local/cruise-control/config/cruisecontrol.properties
@@ -34,14 +34,28 @@ spec:
         - name: cruise-control-capacitycores
           mountPath: /usr/local/cruise-control/config/capacityCores.json
           subPath: capacityCores.json
+      - name: nginx
+        ctlstore:
+          disabled: true
+        image: 528451384384.dkr.ecr.us-west-2.amazonaws.com/nginx:master-3215563
+        resources:
+          limits:
+            cpu: 0.5
+            memory: 512M
+        volumeMounts:
+        - name: mysite-configs
+          mountPath: /usr/local/etc/nginx/conf.d/default.conf
+          subPath: default.conf
       - name: container2
+        ctlstore:
+          disabled: true
         image: 528451384384.dkr.ecr.us-west-2.amazonaws.com/aws-sigv4-proxy:b73bb27_2
         ports:
           - containerPort: 8080
         args:
           - --name=aps
           - --region=us-west-2
-          - --host=aps-workspaces.us-west-2.amazonaws.com/workspaces/ws-e243d20d-1463-4774-8c1b-45fcde0ef284
+          - --host=aps-workspaces.us-west-2.amazonaws.com
       volumes:
         - name: cruise-control-properties
           configMap:
@@ -49,7 +63,21 @@ spec:
         - name: cruise-control-capacitycores
           configMap:
             name: cruise-control-capacitycores     
+        - name: mysite-configs
+          configMap:
+            name: mysite-configs
     configMaps:
+    - name: mysite-configs
+      data: 
+        default.conf: |
+          server {
+            listen                  81;
+            listen [::]:81;
+            server_name example.com;
+            location / {
+              proxy_pass http://localhost:8080/workspaces/ws-e243d20d-1463-4774-8c1b-45fcde0ef284;
+            }
+          }
     - name: cruise-control-capacitycores
       data: 
         capacityCores.json: |
@@ -93,7 +121,7 @@ spec:
           two.step.purgatory.max.requests=25
           num.metric.fetchers=1
           metric.sampler.class=com.linkedin.kafka.cruisecontrol.monitor.sampling.prometheus.PrometheusMetricSampler
-          prometheus.server.endpoint=http://localhost:8080
+          prometheus.server.endpoint=http://127.0.0.1:80
           sampling.allow.cpu.capacity.estimation=true
           metric.reporter.topic=__CruiseControlMetrics
           sample.store.class=com.linkedin.kafka.cruisecontrol.monitor.sampling.KafkaSampleStore
