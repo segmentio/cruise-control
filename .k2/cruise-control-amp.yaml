@@ -3,15 +3,15 @@ kind: SegmentApplicationExperimental
 cell: core
 metadata:
   name: cruise-control-amp
-  namespace: cruise-control
+  namespace: cruise-control-amp
 spec:
   targets:
   - name: cc-amp-stage-usw2-dp-sandbox
     cluster: stage:us-west-2:dp-sandbox
     pool: producer_consumer
     replicatedService:
-      iamRoleName: cruise-control
-      namespace: cruise-control
+      iamRoleName: dp-sandbox.usw2.eks.cruise-control-amp
+      namespace: cruise-control-amp
       replicas: 1
       mainContainers:
       - name: container1
@@ -79,7 +79,7 @@ spec:
             listen [::]:81;
             server_name localhost;
             location / {
-              proxy_pass http://localhost:8080/workspaces/ws-e243d20d-1463-4774-8c1b-45fcde0ef284;
+              proxy_pass http://localhost:8080/workspaces/ws-e243d20d-1463-4774-8c1b-45fcde0ef284/;
             }
           }
     - name: cruise-control-capacitycores
