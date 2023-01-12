@@ -125,7 +125,7 @@ spec:
           two.step.purgatory.max.requests=25
           num.metric.fetchers=1
           metric.sampler.class=com.linkedin.kafka.cruisecontrol.monitor.sampling.prometheus.PrometheusMetricSampler
-          prometheus.server.endpoint=http://kube-prometheus-stack-prometheus.monitoring.svc.cluster.local:9090
+          prometheus.server.endpoint=http://localhost:81
           sampling.allow.cpu.capacity.estimation=true
           metric.reporter.topic=__CruiseControlMetrics
           sample.store.class=com.linkedin.kafka.cruisecontrol.monitor.sampling.KafkaSampleStore
