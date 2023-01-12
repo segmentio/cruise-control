@@ -1,0 +1,73 @@
+apiVersion: platform.segment.com/v1alpha1
+kind: SegmentApplicationExperimental
+cell: core
+metadata:
+  name: cruise-control-amp-ui
+  namespace: cruise-control-amp
+spec:
+  targets:
+  - name: ccampui-stage-usw2-dp-sandbox
+    cluster: stage:us-west-2:dp-sandbox
+    replicatedService:
+      iamRoleName: cruise-control-amp
+      namespace: cruise-control-amp
+      replicas: 1
+      mainContainer:
+        image: 528451384384.dkr.ecr.us-west-2.amazonaws.com/cruise-control-ui:v0.4.0
+        imageName: cruise-control-ui
+        imageRegistry: 528451384384.dkr.ecr.us-west-2.amazonaws.com
+        ports:
+          - containerPort: 8080
+            name: http
+        resources:
+          limits:
+            cpu: 0.25
+            memory: 128M
+        ctlstore:
+          disabled: true
+        volumeMounts:
+        - name: cruise-control-ui-config
+          mountPath: /usr/share/nginx/html/static/config.csv
+          subPath: config.csv
+        - name: cruise-control-ui-nginx-default
+          mountPath: /etc/nginx/conf.d/default.conf
+          subPath: default.conf
+      volumes:
+        - name: cruise-control-ui-config
+          configMap:
+            name: cruise-control-ui-config
+        - name: cruise-control-ui-nginx-default
+          configMap:
+            name: cruise-control-ui-nginx-default
+    configMaps:
+    - name: cruise-control-ui-config
+      data: 
+        config.csv: |
+          kafka,cc,/cruisecontrol/kafkacruisecontrol
+    - name: cruise-control-ui-nginx-default
+      data:
+        default.conf: |
+          server {
+              listen       8080;
+              listen  [::]:8080;
+              server_name  localhost;
+              # access_log  /var/log/nginx/host.access.log  main;
+              location / {
+                  root   /usr/share/nginx/html;
+                  index  index.html index.htm;
+              }
+              #error_page  404              /404.html;
+              # redirect server error pages to the static page /50x.html
+              #
+              error_page   500 502 503 504  /50x.html;
+              location = /50x.html {
+                  root   /usr/share/nginx/html;
+              }
+              # cruisecontrol proxy settings without cors
+              location /cruisecontrol/kafkacruisecontrol/ {
+                  proxy_set_header Host $host;
+                  proxy_set_header X-Real-IP $remote_addr;
+                  proxy_buffering off;
+                  proxy_pass http://cruise-control-amp.cruise-control-amp.svc.cluster.local:9091/kafkacruisecontrol/;
+              }
+          }
